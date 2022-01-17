@@ -8,6 +8,9 @@ const Url = require("./models/Url");
 const methodOverride = require("method-override");
 
 mongoose.connect(`mongodb+srv://${process.env.db_USER}:${process.env.db_PASS}@${process.env.db_HOST}/url-shortener?retryWrites=true&w=majority`);
+mongoose.connection.on('connection', data => {
+	console.log("connection" + data);
+});
 mongoose.connection.on('error', err => {
 	console.log(err);
 });
@@ -49,10 +52,10 @@ app.get("/api/shorturl", async (req, res) => {
 
 app.post("/api/shorturl", async (req, res) => {
 	let regex = /^(?:https?:\/\/)?([^\/]*)/;
-	let path = req.body.url;
-	let checkUrl = path.match(regex)[1];
+	let baseUrl = req.body.url.match(regex)[1];
+	let path = `https://${baseUrl}`;
 	try {
-		await lookup(checkUrl);
+		await lookup(baseUrl);
 		const url = await Url.create({ path });
 		res.json({ original_url: url.path, short_url: url.short })
 	} catch (error) {
@@ -68,7 +71,7 @@ app.get("/api/shorturl/:shorturl", async (req, res) => {
 
 app.delete("/api/shorturl/:id", async (req, res) => {
 	let id = req.params.id;
-	let url = await Url.findByIdAndDelete(id);
+	await Url.findByIdAndDelete(id);
 	res.redirect("/api/shorturl");
 });
 
