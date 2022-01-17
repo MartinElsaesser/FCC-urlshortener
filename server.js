@@ -65,15 +65,28 @@ app.post("/api/shorturl", async (req, res) => {
 
 app.get("/api/shorturl/:shorturl", async (req, res) => {
 	let short = req.params.shorturl;
-	let url = await Url.findOne({ short });
-	res.redirect(url.path)
+	try {
+		let url = await Url.findOne({ short });
+		res.redirect(url.path)
+	} catch (error) {
+		res.redirect("/api/shorturl");
+	}
 });
 
 app.delete("/api/shorturl/:id", async (req, res) => {
 	let id = req.params.id;
-	await Url.findByIdAndDelete(id);
-	res.redirect("/api/shorturl");
+	try {
+		const url = await Url.findByIdAndDelete(id);
+		res.json({ deletedId: url._id, deletedShort: url.short, deletedPath: url.path, msg: `Deleted ${url.path} with short link ${url.short}` });
+	} catch (error) {
+		res.json({ error: "Nothing deleted" });
+	}
 });
+
+app.use("*", (req, res) => {
+	res.status(404)
+	res.send("404");
+})
 
 app.listen(port, _ => {
 	console.log(`Listening on port ${port}`);
