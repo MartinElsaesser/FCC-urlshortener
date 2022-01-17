@@ -44,3 +44,15 @@ input[type='text'] {
   width: 220px;
   text-align: center;
 }
+
+ul {
+	display: inline-block;
+}
+
+li {
+	margin: 10px;
+}
+
+form {
+	display: inline;
+}
