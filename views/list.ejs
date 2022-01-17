@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+  <title>URL Shortener Microservice | freeCodeCamp.org</title>
+  <link rel="icon" type="image/png" href="https://cdn.freecodecamp.org/universal/favicons/favicon-16x16.png" />
+  <link href="/public/style.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+  <h1>Urls</h1>
+  <main>
+    <section>
+      <ul>
+        <% for (let url of urls) { %>
+        <li>
+          <a href="/api/shorturl/<%= url.short %>"><%= url.path %></a>
+          <form action="/api/shorturl/<%= url._id %>?_method=DELETE" method="POST"><button type="submit">delete</button></form>
+        </li>
+        <% } %>
+      </ul>
+    </section>
+  </main>
+  <footer>
+    <p><a href="/">Go to home</a></p>
+    <p>By <a href="https://www.freecodecamp.org/">freeCodeCamp</a></p>
+  </footer>
+</body>
+
+</html>
